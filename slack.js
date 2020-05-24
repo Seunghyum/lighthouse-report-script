@@ -5,13 +5,20 @@ const config = require("lighthouse/lighthouse-core/config/lr-desktop-config.js")
 const reportGenerator = require("lighthouse/lighthouse-core/report/report-generator");
 const request = require("request");
 const util = require("util");
+const path = require("path");
 const fs = require("fs");
-const sleep = (seconds) =>
-  new Promise((resolve) => setTimeout(resolve, (seconds || 1) * 1000));
+
 let scoresBelowBaseline = false;
 let assert = require("assert");
 const dotenv = require("dotenv");
 dotenv.config();
+
+// make reports folder if not exists
+const reportDir = "./reports";
+
+if (!fs.existsSync(reportDir)) {
+  fs.mkdirSync(reportDir);
+}
 
 // reset "./reports" directory
 fs.readdir(reportDir, (err, files) => {
@@ -34,17 +41,6 @@ const app_name = "Remote Meeting";
     logLevel: "info",
     output: "json",
     disableStorageReset: true, // 로그인 정보 유지
-    // disableDeviceEmulation: true,
-    // defaultViewport: {
-    //   width: 1200,
-    //   height: 900,
-    // },
-    // chromeFlags: [
-    //   "--headless",
-    //   "--disable-mobile-emulation",
-    //   "--no-sandbox",
-    //   "--disable-setuid-sandbox",
-    // ],
   };
 
   // Launch chrome using chrome-launcher
@@ -60,13 +56,13 @@ const app_name = "Remote Meeting";
     browserWSEndpoint: webSocketDebuggerUrl,
   });
 
-  // Visit Nature.com
+  // goto home page
   page = (await browser.pages())[0];
   await page.setViewport({ width: 1200, height: 900 });
   await page.goto(TARGET_URL, { waitUntil: "networkidle2" });
-  await runLighthouseForURL(page.url(), opts, page.url());
+  await runLighthouseForURL(page.url(), opts, "report name");
 
-  // Visit a subject
+  // login process
   await page.goto(TARGET_URL, { waitUntil: "networkidle2" });
   //// login
   await page.click("a#login-open-btn");
@@ -77,7 +73,15 @@ const app_name = "Remote Meeting";
   //// goto history page
   await page.waitForSelector('a[href="/lounge/history"]');
   await page.click('a[href="/lounge/history"]');
-  await runLighthouseForURL(page.url(), opts, "Nature Subjects Cancer");
+  await runLighthouseForURL(page.url(), opts, "report name");
+
+  // goto schedule page
+  await page.waitForSelector('a[href="/lounge/schedule"]');
+  await page.click('a[href="/lounge/schedule"]');
+  await page.waitForSelector("#schedule");
+  await runLighthouseForURL(page.url(), opts, "report name");
+
+  console.log("page.url() : ", page.url());
 
   await browser.disconnect();
   await chrome.kill();
@@ -100,7 +104,7 @@ const app_name = "Remote Meeting";
 });
 
 async function runLighthouseForURL(pageURL, opts, reportName) {
-  const reportNameForFile = reportName.replace(/\s/g, "");
+  // const reportNameForFile = reportName.replace(/\s/g, "");
 
   let scores = {
     Performance: 0,
@@ -130,7 +134,7 @@ async function runLighthouseForURL(pageURL, opts, reportName) {
   };
 
   //Write report html to the file
-  const fileName = page.url().replace("https://", "").replace(/\//gi, "-");
+  const fileName = pageURL.replace("https://", "").replace(/\//gi, "-");
   const dirPath = "./reports";
   fs.writeFile(`${dirPath}/${fileName}.html`, html, (err) => {
     if (err) {
