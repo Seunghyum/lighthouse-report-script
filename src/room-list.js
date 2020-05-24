@@ -10,13 +10,15 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 (async () => {
-  const { TARGET_URL } = process.env;
+  const { TARGET_URL, ID, PW } = process.env;
+  const targetURL = "https://st.remotemeeting.com/lounge/room-list";
 
   const opts = {
     logLevel: "info",
     output: "json",
+    disableStorageReset: true,
     disableDeviceEmulation: true,
-    chromeFlags: ["--disable-mobile-emulation", "--incognito"],
+    chromeFlags: ["--disable-mobile-emulation"],
   };
 
   // Launch chrome using chrome-launcher
@@ -36,6 +38,13 @@ dotenv.config();
   const page = (await browser.pages())[0];
   await page.setViewport({ width: 1200, height: 900 });
   await page.goto(TARGET_URL, { waitUntil: "networkidle2" });
+
+  await page.click("a#login-open-btn");
+  await page.type('input[name="j_username"]', ID);
+  await page.type('input[name="j_password"]', PW);
+  await page.click('form[data-ga-action="login"] button');
+
+  await page.waitForNavigation();
 
   console.log("page.url() : ", page.url());
 

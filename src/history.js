@@ -10,13 +10,13 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 (async () => {
-  const { TARGET_URL } = process.env;
+  const { TARGET_URL, ID, PW } = process.env;
 
   const opts = {
     logLevel: "info",
     output: "json",
-    disableDeviceEmulation: true,
-    chromeFlags: ["--disable-mobile-emulation", "--incognito"],
+    disableStorageReset: true, // 로그인 정보 유지
+    chromeFlags: ["--disable-mobile-emulation"],
   };
 
   // Launch chrome using chrome-launcher
@@ -37,6 +37,15 @@ dotenv.config();
   await page.setViewport({ width: 1200, height: 900 });
   await page.goto(TARGET_URL, { waitUntil: "networkidle2" });
 
+  await page.click("a#login-open-btn");
+  await page.type('input[name="j_username"]', ID);
+  await page.type('input[name="j_password"]', PW);
+  await page.click('form[data-ga-action="login"] button');
+
+  // goto history page
+  await page.waitForSelector('a[href="/lounge/history"]');
+  await page.click('a[href="/lounge/history"]');
+  await page.waitForSelector("#history-list");
   console.log("page.url() : ", page.url());
 
   // Run Lighthouse.

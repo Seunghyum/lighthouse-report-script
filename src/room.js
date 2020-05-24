@@ -16,10 +16,6 @@ dotenv.config();
     logLevel: "info",
     output: "json",
     disableDeviceEmulation: true,
-    defaultViewport: {
-      width: 1200,
-      height: 900,
-    },
     chromeFlags: ["--disable-mobile-emulation", "--incognito"],
   };
 
