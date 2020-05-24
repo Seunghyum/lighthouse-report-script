@@ -4,13 +4,15 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "report": "node index.js"
+    "report": "node index.js",
+    "slack": "node slack.js"
   },
   "dependencies": {
     "async": "^3.2.0",
     "chrome-launcher": "^0.13.2",
     "dotenv": "^8.2.0",
     "lighthouse": "^6.0.0",
-    "puppeteer": "^3.1.0"
+    "puppeteer": "^3.1.0",
+    "slack-notify": "^0.1.7"
   }
 }

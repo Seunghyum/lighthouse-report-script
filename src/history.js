@@ -37,6 +37,7 @@ dotenv.config();
   await page.setViewport({ width: 1200, height: 900 });
   await page.goto(TARGET_URL, { waitUntil: "networkidle2" });
 
+  // login
   await page.click("a#login-open-btn");
   await page.type('input[name="j_username"]', ID);
   await page.type('input[name="j_password"]', PW);

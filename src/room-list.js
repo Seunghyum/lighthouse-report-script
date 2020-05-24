@@ -11,7 +11,6 @@ dotenv.config();
 
 (async () => {
   const { TARGET_URL, ID, PW } = process.env;
-  const targetURL = "https://st.remotemeeting.com/lounge/room-list";
 
   const opts = {
     logLevel: "info",
