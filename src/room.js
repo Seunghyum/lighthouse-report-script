@@ -10,7 +10,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 (async () => {
-  const {TARGET_URL, ID, PW} = process.env;
+  const { TARGET_URL, ID, PW } = process.env;
 
   const opts = {
     logLevel: "info",
@@ -37,9 +37,9 @@ dotenv.config();
   });
 
   //Puppeteer
-  page = (await browser.pages())[0];
+  const page = (await browser.pages())[0];
   await page.setViewport({ width: 1200, height: 900 });
-  await page.goto(targetURL, {TARGET_URL;
+  await page.goto(TARGET_URL, { waitUntil: "networkidle2" });
 
   await page.click("a#login-open-btn");
   await page.type('input[name="j_username"]', ID);

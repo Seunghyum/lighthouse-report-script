@@ -10,7 +10,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 (async () => {
-  const {TARGET_URL} = process.env;
+  const { TARGET_URL } = process.env;
 
   const opts = {
     logLevel: "info",
@@ -37,7 +37,7 @@ dotenv.config();
   });
 
   //Puppeteer
-  page = (await browser.pages())[0];
+  const page = (await browser.pages())[0];
   await page.setViewport({ width: 1200, height: 900 });
   await page.goto(TARGET_URL, { waitUntil: "networkidle2" });
 
