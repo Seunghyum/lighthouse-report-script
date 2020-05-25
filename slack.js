@@ -169,7 +169,7 @@ async function runLighthouseForURL(pageURL, opts, reportName) {
             " score " +
             scores[key] * 100 +
             "% for " +
-            reportName +
+            fileName +
             " is less than the defined baseline of " +
             baselineValue * 100 +
             "%"
@@ -178,7 +178,7 @@ async function runLighthouseForURL(pageURL, opts, reportName) {
           `*${app_name}:* _` +
           key +
           `_ score for <${pageURL}|` +
-          reportName +
+          fileName +
           "> below " +
           baselineValue * 100 +
           "%";
@@ -204,7 +204,7 @@ async function runLighthouseForURL(pageURL, opts, reportName) {
           fallback: "Nothing to show here",
           color: "#ffdb8e",
           fields: slackArray,
-          footer: `Lighthouse Tests | ${reportName}`,
+          footer: `Lighthouse Tests | ${fileName}`,
           footer_icon:
             "https://platform.slack-edge.com/img/default_application_icon.png",
         },
